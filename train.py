@@ -37,8 +37,7 @@ def get_args():
     parser.add_argument("--max_actions", type=int, default=200, help="Maximum repetition steps in test phase")
     parser.add_argument("--log_path", type=str, default="tensorboard/ppo_super_mario_bros")
     parser.add_argument("--saved_path", type=str, default="trained_models")
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def train(opt):
@@ -123,7 +122,7 @@ def train(opt):
         R = R[::-1]
         R = torch.cat(R).detach()
         advantages = R - values
-        for i in range(opt.num_epochs):
+        for _ in range(opt.num_epochs):
             indice = torch.randperm(opt.num_local_steps * opt.num_processes)
             for j in range(opt.batch_size):
                 batch_indices = indice[

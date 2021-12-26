@@ -20,7 +20,7 @@ class PPO(nn.Module):
 
     def _initialize_weights(self):
         for module in self.modules():
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
+            if isinstance(module, (nn.Conv2d, nn.Linear)):
                 nn.init.orthogonal_(module.weight, nn.init.calculate_gain('relu'))
                 # nn.init.xavier_uniform_(module.weight)
                 # nn.init.kaiming_uniform_(module.weight)

@@ -28,12 +28,11 @@ class Monitor:
 
 
 def process_frame(frame):
-    if frame is not None:
-        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-        frame = cv2.resize(frame, (84, 84))[None, :, :] / 255.
-        return frame
-    else:
+    if frame is None:
         return np.zeros((1, 84, 84))
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    frame = cv2.resize(frame, (84, 84))[None, :, :] / 255.
+    return frame
 
 
 class CustomReward(Wrapper):
@@ -41,10 +40,7 @@ class CustomReward(Wrapper):
         super(CustomReward, self).__init__(env)
         self.observation_space = Box(low=0, high=255, shape=(1, 84, 84))
         self.curr_score = 0
-        if monitor:
-            self.monitor = monitor
-        else:
-            self.monitor = None
+        self.monitor = monitor or None
 
     def step(self, action):
         state, reward, done, info = self.env.step(action)
@@ -96,11 +92,7 @@ class CustomSkipFrame(Wrapper):
 
 def create_train_env(world, stage, actions, output_path=None):
     env = gym_super_mario_bros.make("SuperMarioBros-{}-{}-v0".format(world, stage))
-    if output_path:
-        monitor = Monitor(256, 240, output_path)
-    else:
-        monitor = None
-
+    monitor = Monitor(256, 240, output_path) if output_path else None
     env = JoypadSpace(env, actions)
     env = CustomReward(env, monitor)
     env = CustomSkipFrame(env)

@@ -20,8 +20,7 @@ def get_args():
     parser.add_argument("--action_type", type=str, default="simple")
     parser.add_argument("--saved_path", type=str, default="trained_models")
     parser.add_argument("--output_path", type=str, default="output")
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def test(opt):
